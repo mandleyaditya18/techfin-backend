@@ -8,12 +8,12 @@ export const addTransaction = async (transaction: Transaction): Promise<Transact
 };
 
 export const getTransactions = async (userId: string): Promise<Transaction[]> => {
-  return transactionDb.findAll().filter(transaction => transaction.userId === userId);
+  return transactionDb.findAll().filter(transaction => transaction.userId === userId && !transaction.deletedAt);
 };
 
 export const getTransactionById = async (id: string, userId: string): Promise<Transaction | undefined> => {
   const transaction = transactionDb.findById(id);
-  return transaction && transaction.userId === userId ? transaction : undefined;
+  return transaction && transaction.userId === userId && !transaction.deletedAt ? transaction : undefined;
 };
 
 export const updateTransaction = async (id: string, updatedTransaction: Partial<Transaction>, userId: string): Promise<Transaction | null> => {
