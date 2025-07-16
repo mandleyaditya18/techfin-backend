@@ -14,9 +14,6 @@ The TechFin backend is a service designed for managing financial transactions se
 - TypeScript
 - Node.js
 - Fastify
-- bcryptjs
-- jsonwebtoken
-- dotenv
 
 ## Architecture
 
