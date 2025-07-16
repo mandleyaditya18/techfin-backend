@@ -1,12 +1,13 @@
 import * as dotenv from 'dotenv';
 import Fastify from 'fastify';
+import { userController } from './controllers/user-controller';
+import { transactionController } from './controllers/transaction-controller';
 
 const server = Fastify();
 dotenv.config();
 
-server.get('/', async (request, reply) => {
-  return { message: 'Hello from Fastify + TypeScript!' };
-});
+server.register(userController);
+server.register(transactionController);
 
 const start = async () => {
   try {
