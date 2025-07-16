@@ -107,6 +107,7 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
   "include": [
-    "src"
+    "src/**/*", // Make sure this includes the fastify.d.ts file
+    "src/types/**/*" // If you place your custom types in a separate folder
   ]
 }

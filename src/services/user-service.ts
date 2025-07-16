@@ -1,7 +1,10 @@
+import * as dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { getUserByUsername, addUser } from '../repositories/user-repository';
 import { User } from '../models/user-model';
+
+dotenv.config();
 
 const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET || '';

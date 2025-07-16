@@ -1,8 +1,12 @@
-import { FastifyPluginAsync } from 'fastify';
+import { FastifyPluginAsync, FastifyRequest } from 'fastify';
 import { createTransaction, fetchTransactions, fetchTransactionById, modifyTransaction, removeTransaction } from '../services/transaction-service';
 import { verifyJwt } from '../utils/jwt-utils';
+import { FastifyRequestWithUserId } from '../types/fastify';
+import { authMiddleware } from '../middlewares/auth-middleware';
 
 const transactionController: FastifyPluginAsync = async (fastify) => {
+  fastify.addHook('preHandler', authMiddleware);
+
   // Create a new transaction
   fastify.post('/transactions', async (request, reply) => {
     const token = request.headers['authorization']?.split(' ')[1];
@@ -15,7 +19,7 @@ const transactionController: FastifyPluginAsync = async (fastify) => {
       return reply.status(401).send({ message: 'Invalid or expired token' });
     }
 
-    request.userId = decoded.userId;
+    (request as FastifyRequestWithUserId).userId = decoded.userId;
 
     const { payee, amount, category, date } = request.body as { payee: string; amount: number; category: string; date: string };
 
@@ -47,13 +51,13 @@ const transactionController: FastifyPluginAsync = async (fastify) => {
       return reply.status(401).send({ message: 'Invalid or expired token' });
     }
 
-    request.userId = decoded.userId;
+    (request as FastifyRequestWithUserId).userId = decoded.userId;
 
     try {
       const transactions = await fetchTransactions(decoded.userId);
       reply.send(transactions);
-    } catch (error) {
-      reply.status(500).send({ message: (error as { message: string } | any).message });
+    } catch (error: any) {
+      reply.status(500).send({ message: error.message });
     }
   });
 
@@ -69,7 +73,7 @@ const transactionController: FastifyPluginAsync = async (fastify) => {
       return reply.status(401).send({ message: 'Invalid or expired token' });
     }
 
-    request.userId = decoded.userId;
+    (request as FastifyRequestWithUserId).userId = decoded.userId;
 
     const { id } = request.params as { id: string };
 
@@ -79,8 +83,8 @@ const transactionController: FastifyPluginAsync = async (fastify) => {
         return reply.status(404).send({ message: 'Transaction not found' });
       }
       reply.send(transaction);
-    } catch (error) {
-      reply.status(500).send({ message: (error as { message: string } | any).message });
+    } catch (error: any) {
+      reply.status(500).send({ message: error.message });
     }
   });
 
@@ -96,7 +100,7 @@ const transactionController: FastifyPluginAsync = async (fastify) => {
       return reply.status(401).send({ message: 'Invalid or expired token' });
     }
 
-    request.userId = decoded.userId;
+    (request as FastifyRequestWithUserId).userId = decoded.userId;
 
     const { id } = request.params as { id: string };
     const { payee, amount, category, date } = request.body as { payee: string; amount: number; category: string; date: string };
@@ -107,8 +111,8 @@ const transactionController: FastifyPluginAsync = async (fastify) => {
         return reply.status(404).send({ message: 'Transaction not found or not authorized' });
       }
       reply.send(updatedTransaction);
-    } catch (error) {
-      reply.status(400).send({ message: (error as { message: string } | any).message });
+    } catch (error: any) {
+      reply.status(400).send({ message: error.message });
     }
   });
 
@@ -124,7 +128,7 @@ const transactionController: FastifyPluginAsync = async (fastify) => {
       return reply.status(401).send({ message: 'Invalid or expired token' });
     }
 
-    request.userId = decoded.userId;
+    (request as FastifyRequestWithUserId).userId = decoded.userId;
 
     const { id } = request.params as { id: string };
 
@@ -134,8 +138,8 @@ const transactionController: FastifyPluginAsync = async (fastify) => {
         return reply.status(404).send({ message: 'Transaction not found or not authorized' });
       }
       reply.status(200).send({ message: 'Transaction deleted successfully' });
-    } catch (error) {
-      reply.status(500).send({ message: (error as { message: string } | any).message });
+    } catch (error: any) {
+      reply.status(500).send({ message: error.message });
     }
   });
 };
