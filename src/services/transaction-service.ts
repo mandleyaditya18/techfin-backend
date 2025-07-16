@@ -25,5 +25,8 @@ export const modifyTransaction = async (id: string, updatedTransaction: Partial<
 };
 
 export const removeTransaction = async (id: string, userId: string): Promise<boolean> => {
-  return await deleteTransaction(id, userId);
+  const transaction = await getTransactionById(id, userId);
+  if (!transaction) return false;
+
+  return await updateTransaction(id, { deletedAt: new Date() }, userId) !== null;
 };
