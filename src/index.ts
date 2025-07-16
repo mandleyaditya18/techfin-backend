@@ -1,6 +1,8 @@
+import * as dotenv from 'dotenv';
 import Fastify from 'fastify';
 
 const server = Fastify();
+dotenv.config();
 
 server.get('/', async (request, reply) => {
   return { message: 'Hello from Fastify + TypeScript!' };
