@@ -31,7 +31,7 @@ const transactionController: FastifyPluginAsync = async (fastify) => {
       });
       reply.status(201).send(transaction);
     } catch (error) {
-      reply.status(400).send({ message: error.message });
+      reply.status(400).send({ message: (error as { message: string } | any).message });
     }
   });
 
@@ -53,7 +53,7 @@ const transactionController: FastifyPluginAsync = async (fastify) => {
       const transactions = await fetchTransactions(decoded.userId);
       reply.send(transactions);
     } catch (error) {
-      reply.status(500).send({ message: error.message });
+      reply.status(500).send({ message: (error as { message: string } | any).message });
     }
   });
 
@@ -80,7 +80,7 @@ const transactionController: FastifyPluginAsync = async (fastify) => {
       }
       reply.send(transaction);
     } catch (error) {
-      reply.status(500).send({ message: error.message });
+      reply.status(500).send({ message: (error as { message: string } | any).message });
     }
   });
 
@@ -108,7 +108,7 @@ const transactionController: FastifyPluginAsync = async (fastify) => {
       }
       reply.send(updatedTransaction);
     } catch (error) {
-      reply.status(400).send({ message: error.message });
+      reply.status(400).send({ message: (error as { message: string } | any).message });
     }
   });
 
@@ -135,7 +135,7 @@ const transactionController: FastifyPluginAsync = async (fastify) => {
       }
       reply.status(200).send({ message: 'Transaction deleted successfully' });
     } catch (error) {
-      reply.status(500).send({ message: error.message });
+      reply.status(500).send({ message: (error as { message: string } | any).message });
     }
   });
 };

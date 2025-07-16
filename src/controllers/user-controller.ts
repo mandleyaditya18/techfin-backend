@@ -9,7 +9,7 @@ const userController: FastifyPluginAsync = async (fastify) => {
       const newUser = await registerUser(username, password);
       reply.status(201).send(newUser);
     } catch (error) {
-      reply.status(400).send({ message: error.message });
+      reply.status(400).send({ message: (error as { message: string } | any).message });
     }
   });
 
@@ -20,7 +20,7 @@ const userController: FastifyPluginAsync = async (fastify) => {
       const { token, user } = await loginUser(username, password);
       reply.send({ token, user });
     } catch (error) {
-      reply.status(401).send({ message: error.message });
+      reply.status(401).send({ message: (error as { message: string } | any).message });
     }
   });
 };
