@@ -20,7 +20,15 @@ const transactionController: FastifyPluginAsync = async (fastify) => {
     const { payee, amount, category, date } = request.body as { payee: string; amount: number; category: string; date: string };
 
     try {
-      const transaction = await createTransaction({ userId: decoded.userId, payee, amount, category, date });
+      const transaction = await createTransaction({
+        userId: decoded.userId,
+        payee,
+        amount,
+        category,
+        date: new Date(date),
+        createdAt: new Date(),
+        updatedAt: new Date()
+      });
       reply.status(201).send(transaction);
     } catch (error) {
       reply.status(400).send({ message: error.message });
@@ -94,7 +102,7 @@ const transactionController: FastifyPluginAsync = async (fastify) => {
     const { payee, amount, category, date } = request.body as { payee: string; amount: number; category: string; date: string };
 
     try {
-      const updatedTransaction = await modifyTransaction(id, { payee, amount, category, date }, decoded.userId);
+      const updatedTransaction = await modifyTransaction(id, { payee, amount, category, date: new Date(date) }, decoded.userId);
       if (!updatedTransaction) {
         return reply.status(404).send({ message: 'Transaction not found or not authorized' });
       }
